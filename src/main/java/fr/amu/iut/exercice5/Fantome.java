@@ -6,57 +6,56 @@ import javafx.scene.shape.Rectangle;
 
 public class Fantome extends Personnage {
 
+    private Circle oeilGauche, oeilDroit, retineGauche, retineDroite;
     private Rectangle basCorps;
 
-
-    private Circle oeilGauche;
-    private Circle retineGauche;
-
-    private Circle oeilDroit;
-    private Circle retineDroite;
-
-
     public Fantome() {
-        super("droite", Color.BLUE, Color.BLUE);
+        super("gauche", Color.BLUE, Color.BLUE);
+
+        oeilGauche = new Circle(6, 6, 2, Color.WHITE);
+        retineGauche = new Circle(6, 6, 1, Color.BLACK);
+
+        oeilDroit = new Circle(14, 6, 2, Color.WHITE);
+        retineDroite = new Circle(14, 6, 1, Color.BLACK);
+
         basCorps = new Rectangle(0, 10, 20, 10);
         basCorps.setFill(Color.BLUE);
 
-        oeilGauche = new Circle(6, 6, 2, Color.WHITE);
-        //regarde vers la droite
-        retineGauche = new Circle(oeilGauche.getCenterX() + 1, 6, 1, Color.BLACK);
-
-        oeilDroit = new Circle(14, 6, 2, Color.WHITE);
-        //regarde vers la droite
-        retineDroite = new Circle(oeilDroit.getCenterX() + 1, 6, 1, Color.BLACK);
-
-
-        super.getChildren().add(basCorps);
-        super.getChildren().add(oeilGauche);
-        super.getChildren().add(retineGauche);
-        super.getChildren().add(oeilDroit);
-        super.getChildren().add(retineDroite);
+        getChildren().addAll(basCorps, oeilGauche, oeilDroit, retineGauche, retineDroite);
     }
 
     @Override
     public void deplacerAGauche() {
-
-
+        super.deplacerAGauche();
+        majYeux(-1, 0);
     }
 
     @Override
     public void deplacerADroite(double largeurJeu) {
-
+        super.deplacerADroite(largeurJeu);
+        majYeux(1, 0);
     }
 
     @Override
     public void deplacerEnBas(double hauteurJeu) {
-
+        if (getLayoutY() < hauteurJeu - LARGEUR_PERSONNAGE) {
+            setLayoutY(getLayoutY() + LARGEUR_PERSONNAGE);
+            majYeux(0, 1);
+        }
     }
 
     @Override
     public void deplacerEnHaut() {
-
+        if (getLayoutY() >= LARGEUR_PERSONNAGE) {
+            setLayoutY(getLayoutY() - LARGEUR_PERSONNAGE);
+            majYeux(0, -1);
+        }
     }
 
-
+    private void majYeux(double dx, double dy) {
+        retineGauche.setCenterX(oeilGauche.getCenterX() + dx);
+        retineGauche.setCenterY(oeilGauche.getCenterY() + dy);
+        retineDroite.setCenterX(oeilDroit.getCenterX() + dx);
+        retineDroite.setCenterY(oeilDroit.getCenterY() + dy);
+    }
 }

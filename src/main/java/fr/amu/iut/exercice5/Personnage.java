@@ -18,13 +18,6 @@ class Personnage extends Group {
     }
 
     public void deplacerAGauche() {
-        //    ****
-        //   *    *
-        //  *---   *
-        //   *    *
-        //    ****
-
-        //déplacement <----
         if (getLayoutX() >= LARGEUR_PERSONNAGE) {
             setLayoutX(getLayoutX() - LARGEUR_PERSONNAGE);
         }
@@ -34,12 +27,6 @@ class Personnage extends Group {
     }
 
     public void deplacerADroite(double largeurJeu) {
-        //    ****
-        //   *    *
-        //  *   ---*
-        //   *    *
-        //    ****
-        //déplacement ---->
         if (getLayoutX() < largeurJeu - LARGEUR_PERSONNAGE) {
             setLayoutX(getLayoutX() + LARGEUR_PERSONNAGE);
         }
@@ -49,26 +36,30 @@ class Personnage extends Group {
     }
 
     public void deplacerEnBas(double hauteurJeu) {
-        //    *****
-        //   *     *
-        //  *   |   *
-        //   *  |  *
-        //    *****
-
+        // Ne descend que si on ne dépasse pas le bord inférieur
+        if (getLayoutY() < hauteurJeu - LARGEUR_PERSONNAGE) {
+            setLayoutY(getLayoutY() + LARGEUR_PERSONNAGE);
+        }
+        if (!direction.equals("bas")) {
+            direction = "bas";
+        }
     }
 
     public void deplacerEnHaut() {
-        //    *****
-        //   *  |  *
-        //  *   |   *
-        //   *     *
-        //    *****
-
+        // Ne monte que si on ne dépasse pas le bord supérieur
+        if (getLayoutY() >= LARGEUR_PERSONNAGE) {
+            setLayoutY(getLayoutY() - LARGEUR_PERSONNAGE);
+        }
+        if (!direction.equals("haut")) {
+            direction = "haut";
+        }
     }
 
     boolean estEnCollision(Personnage autrePersonnage) {
-        return getBoundsInParent().contains(autrePersonnage.getBoundsInParent())
-                || autrePersonnage.getBoundsInParent().contains(getBoundsInParent());
+        return getBoundsInParent().intersects(autrePersonnage.getBoundsInParent());
     }
 
+    public String getDirection() {
+        return direction;
+    }
 }
