@@ -25,18 +25,22 @@ public class RegistrationFormController {
     protected void handleSubmitButtonAction(ActionEvent event) {
         Window owner = submitButton.getScene().getWindow();
         if(nameField.getText().isEmpty()) {
-            System.out.println("Form Error!, Please enter your name");
+            AlertHelper.showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+                    "Please enter your name");
             return;
         }
         if(emailField.getText().isEmpty()) {
-            System.out.println("Form Error!, Please enter your email id");
+            AlertHelper.showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+                    "Please enter your email id");
             return;
         }
         if(passwordField.getText().isEmpty()) {
-            System.out.println("Form Error!, Please enter a password");
+            AlertHelper.showAlert(Alert.AlertType.ERROR, owner, "Form Error!",
+                    "Please enter a password");
             return;
         }
 
-        System.out.println("Registration Successful! \n Welcome " + nameField.getText());
+        AlertHelper.showAlert(Alert.AlertType.CONFIRMATION, owner, "Registration Successful!",
+                "Welcome " + nameField.getText());
     }
 }
