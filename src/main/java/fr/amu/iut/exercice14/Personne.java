@@ -1,15 +1,17 @@
+// src/main/java/fr/amu/iut/exercice4/Personne.java
 package fr.amu.iut.exercice4;
 
+import javafx.beans.Observable;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 public class Personne {
 
-    private String nom;
-    private IntegerProperty age;
-    private StringProperty villeDeNaissance;
+    private final String            nom;
+    private final IntegerProperty   age;
+    private final StringProperty    villeDeNaissance;
 
     public Personne(String nom, int age) {
         this.nom = nom;
@@ -17,11 +19,27 @@ public class Personne {
         this.villeDeNaissance = new SimpleStringProperty("Paris");
     }
 
-    public void setAge(int age) {
-        this.age.setValue(age);
+    public String getNom() {
+        return nom;
     }
 
+    public int getAge() {
+        return age.get();
+    }
+    public void setAge(int age) {
+        this.age.set(age);
+    }
+    public IntegerProperty ageProperty() {
+        return age;
+    }
+
+    public String getVilleDeNaissance() {
+        return villeDeNaissance.get();
+    }
     public void setVilleDeNaissance(String ville) {
-        villeDeNaissance.setValue(ville);
+        this.villeDeNaissance.set(ville);
+    }
+    public StringProperty villeDeNaissanceProperty() {
+        return villeDeNaissance;
     }
 }

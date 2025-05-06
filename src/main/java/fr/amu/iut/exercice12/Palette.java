@@ -1,82 +1,100 @@
+// src/main/java/fr/amu/iut/exercice2/Palette.java
 package fr.amu.iut.exercice2;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-@SuppressWarnings("Duplicates")
 public class Palette extends Application {
 
     private Label texteDuHaut;
+    private Label texteDuBas;
+    private Pane  panneau;
 
     private CustomButton vert;
     private CustomButton rouge;
     private CustomButton bleu;
 
+    // Pointe vers le dernier bouton cliqué
     private CustomButton sourceOfEvent;
-
-    private BorderPane root;
-    private Pane panneau;
-    private HBox boutons;
-    private VBox bas;
-    private Label texteDuBas;
-
-    private EventHandler<ActionEvent> gestionnaireEvenement;
 
     @Override
     public void start(Stage primaryStage) {
-        root = new BorderPane();
+        primaryStage.setTitle("Palette de couleurs - Exo12");
 
-        texteDuHaut = new Label();
-        texteDuHaut.setFont(Font.font("Tahoma",FontWeight.NORMAL, 20));
+        // Label du haut
+        texteDuHaut = new Label("Cliquez sur un bouton");
+        texteDuHaut.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         BorderPane.setAlignment(texteDuHaut, Pos.CENTER);
-        texteDuBas = new Label();
 
+        // Panneau central
         panneau = new Pane();
-        panneau.setPrefSize(400,200);
+        panneau.setPrefSize(400, 200);
 
-        boutons = new HBox(10);
-        boutons.setAlignment(Pos.CENTER);
-        boutons.setPadding(new Insets(10,5,10,5));
+        // Création des CustomButton
+        vert  = new CustomButton("Vert",  "#00FF00");
+        rouge = new CustomButton("Rouge", "#FF0000");
+        bleu  = new CustomButton("Bleu",  "#0000FF");
 
-        bas = new VBox();
-        bas.getChildren().addAll(boutons, texteDuBas);
-        bas.setAlignment(Pos.CENTER_RIGHT);
-
-        vert = new CustomButton("Vert", "#31BCA4");
-        rouge = new CustomButton("Rouge", "#F21411");
-        bleu = new CustomButton("Bleu", "#3273A4");
-
-        gestionnaireEvenement = (event) -> {
-            sourceOfEvent = (CustomButton) event.getSource();
+        // Gestionnaire générique : stocke la source et incrémente son compteur
+        EventHandler<ActionEvent> gestionnaireEvenement = e -> {
+            sourceOfEvent = (CustomButton) e.getSource();
+            sourceOfEvent.setNbClics(sourceOfEvent.getNbClics() + 1);
         };
-
         vert.setOnAction(gestionnaireEvenement);
         rouge.setOnAction(gestionnaireEvenement);
         bleu.setOnAction(gestionnaireEvenement);
 
-        boutons.getChildren().addAll(vert, rouge, bleu);
+        // HBox des boutons
+        HBox boutons = new HBox(10, vert, rouge, bleu);
+        boutons.setAlignment(Pos.CENTER);
+        boutons.setPadding(new Insets(10));
 
-        root.setCenter(panneau);
+        // Label du bas
+        texteDuBas = new Label();
+        texteDuBas.setPadding(new Insets(5, 0, 0, 0));
+
+        VBox bas = new VBox(5, boutons, texteDuBas);
+        bas.setAlignment(Pos.CENTER);
+
+        // Layout principal
+        BorderPane root = new BorderPane();
+        root.setPadding(new Insets(20));
         root.setTop(texteDuHaut);
-        root.setBottom(boutons);
+        root.setCenter(panneau);
+        root.setBottom(bas);
 
-        Scene scene = new Scene(root);
+        // Listener sur nbClics de chaque bouton
+        ChangeListener<Number> nbClicsListener = (obs, oldVal, newVal) -> {
+            String nom = sourceOfEvent.getText();
+            // Met à jour le label du haut
+            texteDuHaut.setText(nom + " choisi " + newVal.intValue() + " fois");
+            // Change la couleur de fond du panneau
+            panneau.setStyle("-fx-background-color: " + sourceOfEvent.getCouleur() + ";");
+            // Met à jour le label du bas (texte et couleur)
+            texteDuBas.setText("Le " + nom + " est une jolie couleur !");
+            texteDuBas.setStyle("-fx-text-fill: " + sourceOfEvent.getCouleur() + ";");
+        };
 
-        primaryStage.setScene(scene);
+        vert.nbClicsProperty().addListener(nbClicsListener);
+        rouge.nbClicsProperty().addListener(nbClicsListener);
+        bleu.nbClicsProperty().addListener(nbClicsListener);
+
+        // Affichage
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
-
