@@ -21,9 +21,8 @@ public class Animation extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Animation Tour Complet");
 
-        // Affiche la fenêtre pour que le bouton soit layouté
+        // Affiche la fenêtre pour que le bouton soit layouté et ses bounds calculés
         primaryStage.show();
-        // Force le calcul des CSS + layout pour avoir de vrais bounds
         customButton.applyCss();
         customButton.layout();
 
@@ -49,11 +48,11 @@ public class Animation extends Application {
 
         // 3) coin haut-droit → coin haut-gauche
         TranslateTransition t3 = new TranslateTransition(dur, customButton);
-        t3.setByX(- (W - bw));
+        t3.setByX(-(W - bw));
 
         // 4) haut-gauche → bas-gauche
         TranslateTransition t4 = new TranslateTransition(dur, customButton);
-        t4.setByY(  H - bh);
+        t4.setByY( H - bh);
 
         // 5) bas-gauche → bas-droit
         TranslateTransition t5 = new TranslateTransition(dur, customButton);
@@ -67,13 +66,15 @@ public class Animation extends Application {
         TranslateTransition t7 = new TranslateTransition(dur, customButton);
         t7.setByX(-dx);
 
+        // Enchaîne les 7 segments puis revient automatiquement
         SequentialTransition seq = new SequentialTransition(
                 customButton,
                 t1, t2, t3, t4, t5, t6, t7
         );
-        seq.setCycleCount(1);
+        seq.setCycleCount(2);       // Aller + retour
+        seq.setAutoReverse(true);
 
-        // On déclenche au clic
+        // Déclenche l’animation au clic
         customButton.setOnMousePressed(evt -> seq.playFromStart());
     }
 
